@@ -10,7 +10,6 @@ import (
 func main() {
 	db.InitDB()
 	server := gin.Default()
-	server.GET("/events", getEvents)
 
 	server.Run(":8080")
 
