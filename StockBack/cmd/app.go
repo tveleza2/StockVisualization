@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"stock-app/db"
+	"stock-app/internal/repositories/db"
 
 	"github.com/gin-gonic/gin"
 )
