@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type BrokerRatingsHistoric struct {
+type RatingHistoric struct {
 	ID             uuid.UUID `gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
 	BrockerStockId uuid.UUID
 	ActionId       uuid.UUID

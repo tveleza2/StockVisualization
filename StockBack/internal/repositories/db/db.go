@@ -33,21 +33,7 @@ func dbMigration(dataBase *gorm.DB) {
 	dataBase.AutoMigrate(&domain.Broker{})
 	dataBase.AutoMigrate(&domain.Rating{})
 	dataBase.AutoMigrate(&domain.Stock{})
-	dataBase.AutoMigrate(&domain.StockPrices{})
+	dataBase.AutoMigrate(&domain.StockPrice{})
 	dataBase.AutoMigrate(&domain.BrokerStock{})
-	dataBase.AutoMigrate(&domain.BrokerRatingsHistoric{})
+	dataBase.AutoMigrate(&domain.RatingHistoric{})
 }
-
-// func createTables() {
-// 	createBrokerTable := `
-// 	CREATE TABLE IF NOT EXISTs
-// 		brokerage(
-// 			broker_id uuid NOT NULL DEFAULT gen_random_uuid(),
-// 			name VARCHAR(255),
-// 			PRIMARY KEY(broker_id)
-// 		)`
-// 	_, error := DB.Exec(createBrokerTable)
-// 	if error != nil {
-// 		panic(error)
-// 	}
-// }
