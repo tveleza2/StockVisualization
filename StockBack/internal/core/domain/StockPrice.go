@@ -10,6 +10,6 @@ type StockPrice struct {
 	ID      uuid.UUID `gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
 	Price   float64
 	Time    time.Time
-	StockId string
-	Stock   Stock `gorm:"foreignKey:StockId;references:ID"`
+	StockID string
+	Stock   Stock `gorm:"foreignKey:StockID;references:ID"`
 }
