@@ -150,22 +150,6 @@ StockVI/
   npm run test:unit
   ```
 
----
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bugfix.
-3. Commit your changes with clear messages.
-4. Submit a pull request.
-
----
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 ```
 
 Feel free to customize this README further to suit your project’s needs!
