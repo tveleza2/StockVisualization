@@ -2,16 +2,20 @@ package main
 
 import (
 	"net/http"
+	"stock-app/internal/core/services"
+	web "stock-app/internal/handlers/http"
 	"stock-app/internal/repositories/db"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	db.InitDB()
-	server := gin.Default()
+	database := db.InitDB()
+	actionRepo := db.NewActionRepository(database)
+	actionService := services.NewActionService(actionRepo)
+	router := web.NewRouter(*actionService)
 
-	server.Run(":8080")
+	router.Run(":8080")
 
 }
 

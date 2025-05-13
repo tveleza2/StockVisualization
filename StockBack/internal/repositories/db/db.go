@@ -12,7 +12,7 @@ import (
 
 var DB *gorm.DB
 
-func InitDB() {
+func InitDB() *gorm.DB {
 
 	dsn := os.Getenv("DATABASE_URL")
 	var err error
@@ -24,7 +24,7 @@ func InitDB() {
 	}
 
 	dbMigration(DB)
-
+	return DB
 	// createTables()
 }
 
