@@ -151,5 +151,3 @@ StockVI/
   ```
 
 ```
-
-Feel free to customize this README further to suit your project’s needs!
