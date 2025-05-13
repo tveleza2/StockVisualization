@@ -12,7 +12,7 @@ type ActionRepository struct {
 	db *gorm.DB
 }
 
-func New(db *gorm.DB) ports.ActionPort {
+func NewActionRepository(db *gorm.DB) ports.ActionPort {
 	return &ActionRepository{db}
 }
 
