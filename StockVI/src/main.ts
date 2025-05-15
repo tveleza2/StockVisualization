@@ -4,9 +4,11 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import PrimeVue from 'primevue/config';
-import Aura from '@primeuix/themes/aura';
+import ComponentTesting from '@/pages/ComponentTesting.vue';
 
-const app = createApp(App)
+// const app = createApp(ComponentTesting)
+const app = createApp(ComponentTesting)
+
 
 app.use(createPinia())
 app.use(PrimeVue)

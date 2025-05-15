@@ -38,15 +38,20 @@
     import ColumnGroup from 'primevue/columngroup';   // optional
     import Row from 'primevue/row';                   // optional
 
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted, defineEmits } from 'vue';
 
     import {GetRatingsHistoric} from '@/services/RatingsHistoric'
     // import { ProductService } from '@/service/ProductService';
 
     function onRowClick(event) {
         selectedStock.value = event.data.stock; // PrimeVue gives you the row object in event.data
+        emit('stock-selected', event.data);
         console.log("Selected Stock",selectedStock.value);
     }
+
+    const emit = defineEmits<{
+        (e: 'stock-selected', stock: RatingsHistoric): void;
+    }>();
 
 
     const ratings = ref<RatingsHistoric[]>([])
