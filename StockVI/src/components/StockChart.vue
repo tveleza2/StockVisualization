@@ -1,38 +1,44 @@
 <template>
-    <div class="border p-4 h-48">
-      <h1 class="text-lg mb-2">{{ selectedStock.value }}</h1>
-      <h2 class="text-md mb-2">{{ selectedStock.value }}</h2>
-      <Chart type="line" :data="chartData" />
+    <div class="border p-4">
+      <h1 class="text-xl mb-2 text-center">{{ selectedStock.stock }}</h1>
+      <h2 class="text-base mb-2 text-center">{{ selectedStock.company }}</h2>
+      <Chart type="line" :data="chartData"/>
 
     </div>
   </template>
 
 
 <script setup lang="ts">
-    import { watch } from 'vue';
+    import { watch,ref } from 'vue';
     import Chart from 'primevue/chart';
-    import {}
+    import type { ChartData } from 'chart.js';
+    import type { RatingsHistoric } from '@/ports/RatingHistoric';
+    import type { StockPrice } from '@/ports/StockPrice';
+    import {GetStockPrices} from '@/services/StockPrice';
 
-    watch(props.selectedStock, async (stock) => {
-        if (stock) {
-            
-            // const res = await fetch(`/api/stocks/${stock.id}/chart`);
-            const res = await StockPrice;
-            const data = await res.json();
-            chartData.value = formatForChart(data);
-        }
-    });
+    const chartData = ref<ChartData<'line'>>();
+    
 
     const props = defineProps<{
         selectedStock: RatingsHistoric;
     }>();
 
-
+    watch(props.selectedStock, async (stock) => {
+        if (stock) {
+            
+            // const res = await fetch(`/api/stocks/${stock.id}/chart`);
+            // const data = await res.json();
+            const data = await GetStockPrices();
+            chartData.value = formatForChart(data);
+        }
+    },{ immediate: true });
 
     function formatForChart(rawData: any) {
     // Example format
     return {
-        labels: rawData.map((item: any) => item.date),
+        labels: rawData.map((item:StockPrice) =>
+                item.time instanceof Date ? item.time.toISOString().split('T')[0] : item.time
+                ),
         datasets: [
         {
             label: 'Price',

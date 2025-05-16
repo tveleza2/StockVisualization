@@ -7,7 +7,7 @@ import PrimeVue from 'primevue/config';
 import ComponentTesting from '@/pages/ComponentTesting.vue';
 
 // const app = createApp(ComponentTesting)
-const app = createApp(ComponentTesting)
+const app = createApp(App)
 
 
 app.use(createPinia())

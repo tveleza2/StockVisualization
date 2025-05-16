@@ -3,6 +3,7 @@ export interface RatingsHistoric{
     company: string, 
     broker: string, 
     action: string, 
-    rating: string 
+    rating: string,
+    target?: number
 }
 

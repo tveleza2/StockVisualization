@@ -1,11 +1,7 @@
 <template>
     <div class="overflow-x-auto p-4">
         <DataTable :value="ratings" tableStyle="min-width: 50rem" @row-click="onRowClick">
-            <Column field="stock" header="Stock" :headerStyle="{ fontWeight: 'bold', fontSize: '1.125rem' }"></Column>
-            <Column field="company" header="Company" :headerStyle="{ fontWeight: 'bold', fontSize: '1.125rem' }"></Column>
-            <Column field="broker" header="Broker" :headerStyle="{ fontWeight: 'bold', fontSize: '1.125rem' }"></Column>
-            <Column field="action" header="Action" :headerStyle="{ fontWeight: 'bold', fontSize: '1.125rem' }"></Column>
-            <Column field="rating" header="Rating" :headerStyle="{ fontWeight: 'bold', fontSize: '1.125rem' }"></Column>
+            <Column :headerStyle="{ fontWeight: 'bold', fontSize: '1.125rem' }" v-for="col of columns" :key="col.field" :field="col.field" :header="col.header " ></Column>
         </DataTable>
 
 
@@ -39,11 +35,11 @@
     import Row from 'primevue/row';                   // optional
 
     import { ref, onMounted, defineEmits } from 'vue';
-
+    import type { RatingsHistoric } from '@/ports/RatingHistoric';
     import {GetRatingsHistoric} from '@/services/RatingsHistoric'
     // import { ProductService } from '@/service/ProductService';
 
-    function onRowClick(event) {
+    function onRowClick(event:any) {
         selectedStock.value = event.data.stock; // PrimeVue gives you the row object in event.data
         emit('stock-selected', event.data);
         console.log("Selected Stock",selectedStock.value);
@@ -53,12 +49,22 @@
         (e: 'stock-selected', stock: RatingsHistoric): void;
     }>();
 
+    const columns = [
+        {field:"stock",header:"Stock"},
+        {field:"company",header:"Company"}, 
+        {field:"broker",header:"Broker"},
+        {field:"action",header:"Action"},
+        {field:"rating",header:"Rating"},
+
+    ]
 
     const ratings = ref<RatingsHistoric[]>([])
     const selectedStock = ref(null);
 
     
 
-    onMounted(() => {ratings.value = GetRatingsHistoric()});
+    onMounted(async () => {
+      ratings.value = await GetRatingsHistoric();
+    });
   </script>
   
