@@ -7,7 +7,6 @@ import (
 
 func ToStockPrice(stockPriceDTO *dto.StockPriceDTO) domain.StockPrice {
 	return domain.StockPrice{
-		ID:      stockPriceDTO.ID,
 		StockID: stockPriceDTO.StockID,
 		Price:   stockPriceDTO.Price,
 		Time:    stockPriceDTO.Time,
@@ -16,7 +15,6 @@ func ToStockPrice(stockPriceDTO *dto.StockPriceDTO) domain.StockPrice {
 
 func FromStockPrice(stockPrice *domain.StockPrice) dto.StockPriceDTO {
 	return dto.StockPriceDTO{
-		ID:        stockPrice.ID,
 		StockID:   stockPrice.StockID,
 		Price:     stockPrice.Price,
 		Time:      stockPrice.Time,
@@ -24,7 +22,7 @@ func FromStockPrice(stockPrice *domain.StockPrice) dto.StockPriceDTO {
 	}
 }
 
-func FromStockPriceList(stockPriceList []domain.StockPrice) []dto.StockPriceDTO {
+func FromStockPrices(stockPriceList []domain.StockPrice) []dto.StockPriceDTO {
 	stockPriceDTO := make([]dto.StockPriceDTO, len(stockPriceList))
 	for i, sp := range stockPriceList {
 		stockPriceDTO[i] = FromStockPrice(&sp)

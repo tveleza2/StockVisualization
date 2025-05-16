@@ -34,6 +34,20 @@ func FromRatingHistoric(ratingHistoric *domain.RatingHistoric) dto.RatingHistori
 	}
 }
 
+func FullResponseFromRatingHistoric(ratingHistoric *domain.RatingHistoric) dto.FullResponseRatingHistoricDTO {
+	return dto.FullResponseRatingHistoricDTO{
+		ID:         ratingHistoric.ID,
+		StockName:  ratingHistoric.BrokerStock.Stock.Name,
+		FromTarget: ratingHistoric.FromTarget,
+		ToTarget:   ratingHistoric.ToTarget,
+
+		Time:       ratingHistoric.Time,
+		FromRating: ratingHistoric.FromRating.Name, // Optional if loaded
+		ToRating:   ratingHistoric.ToRating.Name,   // Optional if loaded
+		ActionName: ratingHistoric.Action.Name,     // Optional if loaded
+	}
+}
+
 func FromRatingHistorics(ratingHistorics []domain.RatingHistoric) []dto.RatingHistoricDTO {
 	ratingHistoricsDTO := make([]dto.RatingHistoricDTO, len(ratingHistorics))
 	for i, rh := range ratingHistorics {

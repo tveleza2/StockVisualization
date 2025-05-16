@@ -13,7 +13,9 @@ func main() {
 	database := db.InitDB()
 	actionRepo := db.NewActionRepository(database)
 	actionService := services.NewActionService(actionRepo)
-	router := web.NewRouter(*actionService)
+	ratHisRepo := db.NewRatingHistoricRepository(database)
+	ratHisService := services.NewRatingHistoricService(ratHisRepo)
+	router := web.NewRouter(*actionService, *ratHisService)
 
 	router.Run(":8080")
 
