@@ -34,7 +34,7 @@
     import ColumnGroup from 'primevue/columngroup';   // optional
     import Row from 'primevue/row';                   // optional
 
-    import { ref, onMounted, defineEmits } from 'vue';
+    import { ref, onMounted } from 'vue';
     import type { RatingsHistoric } from '@/ports/RatingHistoric';
     import {GetRatingsHistoric} from '@/services/RatingsHistoric'
     // import { ProductService } from '@/service/ProductService';
