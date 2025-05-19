@@ -40,7 +40,38 @@ func FullResponseFromRatingHistoric(ratingHistoric *domain.RatingHistoric) dto.F
 		StockName:  ratingHistoric.BrokerStock.Stock.Name,
 		FromTarget: ratingHistoric.FromTarget,
 		ToTarget:   ratingHistoric.ToTarget,
+		Time:       ratingHistoric.Time,
+		FromRating: ratingHistoric.FromRating.Name, // Optional if loaded
+		ToRating:   ratingHistoric.ToRating.Name,   // Optional if loaded
+		ActionName: ratingHistoric.Action.Name,     // Optional if loaded
+	}
+}
 
+func RatingHistoricFromFullResponse(FullDto *dto.FullResponseRatingHistoricDTO) domain.RatingHistoric {
+	return domain.RatingHistoric{
+			ID:FullDto.ID,
+			BrokerStockID: FullDto.BrokerName,
+			ActionID:      FullDto.ActionName,
+			FromRatingID:  FullDto.FromRating,
+			ToRatingID:    FullDto.ToRating,
+			FromTarget:    FullDto.FromTarget,
+			ToTarget:      FullDto.ToTarget,
+			Time:          FullDto.Time,
+
+			FromRating:  ,
+			ToRating:    ,
+			Action:     ,
+			BrokerStock: ,
+
+
+
+
+
+
+		ID:         ratingHistoric.ID,
+		StockName:  ratingHistoric.BrokerStock.Stock.Name,
+		FromTarget: ratingHistoric.FromTarget,
+		ToTarget:   ratingHistoric.ToTarget,
 		Time:       ratingHistoric.Time,
 		FromRating: ratingHistoric.FromRating.Name, // Optional if loaded
 		ToRating:   ratingHistoric.ToRating.Name,   // Optional if loaded
