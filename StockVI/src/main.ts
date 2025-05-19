@@ -4,7 +4,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import PrimeVue from 'primevue/config';
-import ComponentTesting from '@/pages/ComponentTesting.vue';
+// import ComponentTesting from '@/pages/ComponentTesting.vue';
 
 // const app = createApp(ComponentTesting)
 const app = createApp(App)

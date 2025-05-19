@@ -1,11 +1,7 @@
 <template>
-  
-  <div class="p-8 text-2xl text-green-600">
-    If you see this, App.vue is rendering!
-  </div>
 
 
-  <!-- <div class="flex flex-col h-screen">
+  <div class="flex flex-col h-screen">
     <NavBar/>
     <div class="flex flex-1">
       <div :class="selectedStock ? 'w-3/4' : 'w-full'">
@@ -16,7 +12,7 @@
         <BrokerRating v-if="selectedStock" :selectedStock="selectedStock"></BrokerRating>
       </div>
     </div>
-  </div> -->
+  </div>
 </template>
 
 <script setup lang="ts">
