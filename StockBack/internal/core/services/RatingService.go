@@ -3,11 +3,13 @@ package services
 import (
 	"errors"
 	"fmt"
+	"stock-app/internal/core/domain"
 	"stock-app/internal/core/ports"
 	"stock-app/internal/handlers/dto"
 	"stock-app/internal/handlers/mapper"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func validateRatingDTOForCreate(dto *dto.RatingDTO) error {
@@ -83,4 +85,23 @@ func (service RatingService) DeleteRating(ratingDTO dto.RatingDTO) error {
 		return err
 	}
 	return service.ratingRepository.Delete(ratingDTO.ID)
+}
+
+func (service RatingService) FindByNames(names *[]string) (*[]domain.Rating, error) {
+	ratings, err := service.ratingRepository.FindByNames(names)
+	if err != nil {
+		return ratings, nil
+	}
+	return ratings, err
+}
+func (service RatingService) FindByName(name string) (domain.Rating, error) {
+	rating, err := service.ratingRepository.FindByName(name)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			ratingDTO, err := service.CreateRating(dto.RatingDTO{Name: name})
+			return mapper.ToRating(&ratingDTO), err
+		}
+		return rating, nil
+	}
+	return rating, err
 }

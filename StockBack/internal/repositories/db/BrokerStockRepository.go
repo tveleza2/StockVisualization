@@ -31,6 +31,23 @@ func (repository BrokerStockRepository) FindAll() ([]domain.BrokerStock, error) 
 	return brokerStocks, err
 }
 
+func (repository BrokerStockRepository) FindByBrokerAndStock(brokerId uuid.UUID, stockId string) (domain.BrokerStock, error) {
+	var brokerStock domain.BrokerStock
+	err := repository.db.Where("broker_id == ? AND stock_id == ?", brokerId, stockId).First(&brokerStock).Error
+	return brokerStock, err
+}
+func (repository BrokerStockRepository) FindByBrokersAndStock(brokerIds []uuid.UUID, stockIds []string) (*[]domain.BrokerStock, error) {
+	var brokerStock []domain.BrokerStock
+	err := repository.db.Where("broker_id IN ? AND stock_id IN ?", brokerIds, stockIds).First(&brokerStock).Error
+	return &brokerStock, err
+}
+
+func (repository BrokerStockRepository) FindAllByStock(stockId string) ([]domain.BrokerStock, error) {
+	var brokerStocks []domain.BrokerStock
+	err := repository.db.Where("stock_id == ?", stockId).Find(&brokerStocks).Error
+	return brokerStocks, err
+}
+
 func (repository BrokerStockRepository) Update(brokerStock *domain.BrokerStock) error {
 	return repository.db.Save(brokerStock).Error
 }

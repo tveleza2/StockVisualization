@@ -1,8 +1,11 @@
 package services
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"os"
 	"stock-app/internal/core/ports"
 	"stock-app/internal/handlers/dto"
 	"stock-app/internal/handlers/mapper"
@@ -29,10 +32,18 @@ func validateRatingHistoricDTOForUpdateOrDelete(dto *dto.RatingHistoricDTO) erro
 
 type RatingHistoricService struct {
 	ratingHistoricRepository ports.RatingHistoricPort
+	bSService                BrokerStockService
+	actService               ActionService
+	ratService               RatingService
 }
 
-func NewRatingHistoricService(repository ports.RatingHistoricPort) *RatingHistoricService {
-	return &RatingHistoricService{repository}
+func NewRatingHistoricService(repository ports.RatingHistoricPort, brokerStockService BrokerStockService, actionService ActionService, ratingService RatingService) *RatingHistoricService {
+	return &RatingHistoricService{
+		ratingHistoricRepository: repository,
+		bSService:                brokerStockService,
+		actService:               actionService,
+		ratService:               ratingService,
+	}
 }
 
 func (service RatingHistoricService) CreateRatingHistoric(ratingHistoricDTO dto.RatingHistoricDTO) (dto.RatingHistoricDTO, error) {
@@ -84,3 +95,112 @@ func (service RatingHistoricService) DeleteRatingHistoric(ratingHistoricDTO dto.
 	}
 	return service.ratingHistoricRepository.Delete(ratingHistoricDTO.ID)
 }
+
+func (service RatingHistoricService) ReadRatingHistoricByStock(stock string) ([]dto.FullResponseRatingHistoricDTO, error) {
+	brokerStockIds, err := service.bSService.IdsByStock(stock)
+	if err != nil {
+		return []dto.FullResponseRatingHistoricDTO{}, err
+	}
+	ratingHistoric, err := service.ratingHistoricRepository.FindAllByStock(brokerStockIds)
+	if err != nil {
+		return []dto.FullResponseRatingHistoricDTO{}, err
+	}
+	return mapper.FullResponseFromRatingHistorics(ratingHistoric), nil
+}
+
+func (service RatingHistoricService) SaveResponseRatingHistoric(dto dto.FullResponseRatingHistoricDTO) error {
+	action, err := service.actService.FindByName(dto.ActionName)
+	if err != nil {
+		return err
+	}
+	brokerStock, err := service.bSService.FindByBrokerAndStock(dto.BrokerName, dto.StockID)
+	if err != nil {
+		return err
+	}
+	fromRating, err := service.ratService.FindByName(dto.FromRating)
+	if err != nil {
+		return err
+	}
+	toRating, err := service.ratService.FindByName(dto.ToRating)
+	if err != nil {
+		return err
+	}
+	ratingHistoric, err := mapper.RatingHistoricFromFullResponse(&dto, brokerStock, action, fromRating, toRating)
+	if err != nil {
+		return fmt.Errorf("the dto mapping failed")
+	}
+	return service.ratingHistoricRepository.Update(&ratingHistoric)
+}
+
+func (service RatingHistoricService) SaveMultipleResponsesRatingHistoric(dtos []dto.FullResponseRatingHistoricDTO) error {
+	for _, dto := range dtos {
+		err := service.SaveResponseRatingHistoric(dto)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (service RatingHistoricService) FetchRatingsFromSource() (*[]dto.FullResponseRatingHistoricDTO, error) {
+	var dtos []dto.FullResponseRatingHistoricDTO
+	var responseFormat dto.ApiResponseFromSource
+	endpoint := os.Getenv("DATA_SOURCE")
+	authToken := os.Getenv("AUTH_TOKEN")
+	request, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		fmt.Println("Error making request:", err)
+		return &dtos, err
+	}
+	request.Header.Set("Authorization", "Bearer "+authToken)
+	request.Header.Set("Accept", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+
+	if err != nil {
+		return nil, fmt.Errorf("request failed: %w", err)
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("API returned status: %w", err)
+	}
+
+	if err := json.NewDecoder(response.Body).Decode(&responseFormat); err != nil {
+		return nil, fmt.Errorf("JSON decoding failed: %w", err)
+	}
+
+	return &responseFormat.Items, nil
+}
+
+// func (service RatingHistoricService) SaveMultipleResponseRatingHistoric(dtos *[]dto.FullResponseRatingHistoricDTO) error {
+// 	numberOfNewEntries := len(*dtos)
+// 	actionNames, brokerNames, ratingNames := make([]string, numberOfNewEntries), make([]string, numberOfNewEntries), make([]string, 2*numberOfNewEntries)
+// 	var ratingHistoric domain.RatingHistoric
+
+// 	for i, dto := range *dtos {
+// 		actionNames[i] = dto.ActionName
+// 		brokerNames[i] = dto.BrokerName
+// 		ratingNames[2*i] = dto.FromRating
+// 		ratingNames[2*i+1] = dto.ToRating
+// 	}
+// 	actions, err := service.actService.FindByNames(&actionNames)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	ratings, err := service.ratService.FindByNames(&ratingNames)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	brokerStocks, err := service.bSService.FindByBrokersAndStock(brokerNames,)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	for _, dto := range *dtos {
+// 		ratingHistoric = mapper.RatingHistoricFromFullResponse(dto,brokerStocks[],actions[dto.ActionName],ratings[dto.FromRating],ratings[dto.ToRating])
+// 	}
+
+// 	return nil
+// }

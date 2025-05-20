@@ -9,12 +9,12 @@ import (
 
 func RegisterRatingHistoricRoutes(router *gin.Engine, service services.RatingHistoricService) {
 	handler := handlers.NewRatingHistoricHandler(service)
-	ratingHistoric := router.Group("/actions")
+	ratingHistoric := router.Group("/rating-historics")
 	{
-		ratingHistoric.POST("/rating-historics", handler.CreateRatingHistoric)
-		ratingHistoric.GET("/rating-historics/:id", handler.GetRatingHistoric)
-		ratingHistoric.GET("/rating-historics", handler.GetRatingHistorics)
-		ratingHistoric.PUT("/rating-historics", handler.UpdateRatingHistoric)
-		ratingHistoric.DELETE("/rating-historics", handler.DeleteRatingHistoric)
+		ratingHistoric.POST("/", handler.CreateRatingHistoric)
+		ratingHistoric.GET("/:id", handler.GetRatingHistoric)
+		ratingHistoric.GET("/", handler.GetRatingHistorics)
+		ratingHistoric.PUT("/", handler.UpdateRatingHistoric)
+		ratingHistoric.DELETE("/", handler.DeleteRatingHistoric)
 	}
 }

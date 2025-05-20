@@ -3,11 +3,13 @@ package services
 import (
 	"errors"
 	"fmt"
+	"stock-app/internal/core/domain"
 	"stock-app/internal/core/ports"
 	"stock-app/internal/handlers/dto"
 	"stock-app/internal/handlers/mapper"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func validateBrokerDTOForCreate(dto *dto.BrokerDTO) error {
@@ -83,4 +85,24 @@ func (service BrokerService) DeleteBroker(brokerDTO dto.BrokerDTO) error {
 		return err
 	}
 	return service.brokerRepository.Delete(brokerDTO.ID)
+}
+
+func (service BrokerService) FindByName(name string) (domain.Broker, error) {
+	broker, err := service.brokerRepository.FindByName(name)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			brokerDTO, err := service.CreateBroker(dto.BrokerDTO{Name: name})
+			return mapper.ToBroker(&brokerDTO), err
+		}
+		return broker, err
+	}
+	return broker, nil
+}
+
+func (service BrokerService) FindByMapOfNames(names *[]string) (*[]domain.Broker, error) {
+	brokers, err := service.brokerRepository.FindByNames(names)
+	if err != nil {
+		return brokers, err
+	}
+	return brokers, nil
 }
