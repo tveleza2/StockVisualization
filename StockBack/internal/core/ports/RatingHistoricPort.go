@@ -9,6 +9,8 @@ import (
 type RatingHistoricPort interface {
 	Create(rating *domain.RatingHistoric) error
 	Find(id uuid.UUID) (*domain.RatingHistoric, error)
+	FindOneByBrokerStock(id uuid.UUID) (*domain.RatingHistoric, error)
+	FindAllByStock(brokerStockIds *[]uuid.UUID) ([]domain.RatingHistoric, error)
 	FindAll() ([]domain.RatingHistoric, error)
 	Update(rating *domain.RatingHistoric) error
 	Delete(id uuid.UUID) error

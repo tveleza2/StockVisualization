@@ -25,6 +25,18 @@ func (repository RatingRepository) Find(id uuid.UUID) (*domain.Rating, error) {
 	return &rating, repository.db.First(&rating, id).Error
 }
 
+func (repository RatingRepository) FindByNames(names *[]string) (*[]domain.Rating, error) {
+	var ratings []domain.Rating
+	err := repository.db.Where("name IN ", names).Find(&ratings).Error
+	return &ratings, err
+}
+
+func (repository RatingRepository) FindByName(name string) (domain.Rating, error) {
+	var rating domain.Rating
+	err := repository.db.Where("name == ", name).First(&rating).Error
+	return rating, err
+}
+
 func (repository RatingRepository) FindAll() ([]domain.Rating, error) {
 	var ratings []domain.Rating
 	err := repository.db.Find(&ratings).Error

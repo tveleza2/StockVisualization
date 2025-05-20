@@ -24,6 +24,24 @@ func (repository ActionRepository) Find(id uuid.UUID) (*domain.Action, error) {
 	return &action, repository.db.First(&action, "id = ?", id).Error
 }
 
+func (repository ActionRepository) FindByName(name string) (domain.Action, error) {
+	var action domain.Action
+	err := repository.db.Where("name == ?", name).First(&action).Error
+	return action, err
+}
+
+func (repository ActionRepository) FindByNames(names *[]string) (*map[string]uuid.UUID, error) {
+	var actions []domain.Action
+	actionMap := make(map[string]uuid.UUID)
+	err := repository.db.Where("name IN ?", names).Find(&actions).Error
+	if err == nil {
+		for _, action := range actions {
+			actionMap[action.Name] = action.ID
+		}
+	}
+	return &actionMap, err
+}
+
 func (repository ActionRepository) FindAll() ([]domain.Action, error) {
 	var actions []domain.Action
 	err := repository.db.Find(&actions).Error
