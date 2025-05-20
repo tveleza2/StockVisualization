@@ -23,7 +23,7 @@ func InitDB() *gorm.DB {
 		panic(err)
 	}
 
-	dbMigration(DB)
+	// dbMigration(DB)
 	return DB
 	// createTables()
 }

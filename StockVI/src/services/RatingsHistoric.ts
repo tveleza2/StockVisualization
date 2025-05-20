@@ -1,22 +1,18 @@
 import type { RatingsHistoric } from "@/ports/RatingHistoric"
 
 
-export function GetRatingsHistoric():Promise<RatingsHistoric[]>{ 
-  return new Promise((resolve,reject)=>{
-    resolve([
-  { stock: 'AAPL', company: 'Apple Inc.', broker: 'JP Morgan', action: 'Reiterated', rating: 'Buy' },
-  { stock: 'NVDA', company: 'NVIDIA', broker: 'JP Morgan', action: 'Target Lowered', rating: 'Sell' },
-  { stock: 'RMTI', company: 'Rockwell Medical', broker: 'HC Wainwright', action: 'Target lowered', rating: 'Neutral' },
-  { stock: 'TSLA', company: 'Tesla Inc.', broker: 'Goldman Sachs', action: 'Initiated', rating: 'Buy' },
-  { stock: 'AMZN', company: 'Amazon.com Inc.', broker: 'Morgan Stanley', action: 'Reiterated', rating: 'Buy' },
-  { stock: 'MSFT', company: 'Microsoft Corp.', broker: 'Barclays', action: 'Downgraded', rating: 'Hold' },
-  { stock: 'GOOGL', company: 'Alphabet Inc.', broker: 'UBS', action: 'Upgraded', rating: 'Buy' },
-  { stock: 'META', company: 'Meta Platforms', broker: 'BofA Securities', action: 'Reiterated', rating: 'Buy' },
-  { stock: 'INTC', company: 'Intel Corp.', broker: 'Citigroup', action: 'Target Raised', rating: 'Neutral' },
-  { stock: 'NFLX', company: 'Netflix Inc.', broker: 'Wells Fargo', action: 'Initiated', rating: 'Sell' }
-]
-);
-})}
+export async function GetRatingsHistoric():Promise<RatingsHistoric[]>{ 
+  const res = await fetch('http://localhost:8080/rating-historics/')
+  if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+  const apiData = await res.json();
+  return apiData.map((item: any): RatingsHistoric => ({
+      stock: item.ticker,
+      company: item.company, // or you could hardcode a map if needed
+      broker: item.brokerage,
+      action: item.action,
+      rating: item.rating_to,
+      target: parseFloat(item.target_to.replace('$', '')) || undefined
+    }))}
 
 
 

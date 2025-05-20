@@ -9,6 +9,7 @@ import (
 	"stock-app/internal/handlers/mapper"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func validateDTOForCreate(dto *dto.ActionDTO) error {
@@ -96,4 +97,24 @@ func (service ActionService) DeleteAction(actionDTO dto.ActionDTO) error {
 		return err
 	}
 	return nil
+}
+
+func (service ActionService) FindByName(name string) (domain.Action, error) {
+	action, err := service.actionRepository.FindByName(name)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			actionDTO, err := service.CreateAction(dto.ActionDTO{Name: name})
+			return mapper.ToAction(&actionDTO), err
+		}
+		return action, err
+	}
+	return action, nil
+}
+
+func (service ActionService) FindByNames(names *[]string) (*map[string]uuid.UUID, error) {
+	actions, err := service.actionRepository.FindByNames(names)
+	if err != nil {
+		return actions, nil
+	}
+	return actions, err
 }

@@ -49,7 +49,7 @@ StockVisualization is a fullstack application designed to provide stock market i
 - **Framework**: Vue 3
 - **Build Tool**: Vite
 - **Testing**: Vitest
-- **Styling**: Scoped CSS
+- **Styling**: TailwindCSS
 
 ---
 
