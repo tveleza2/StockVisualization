@@ -12,7 +12,7 @@ func RegisterRatingHistoricRoutes(router *gin.Engine, service services.RatingHis
 	ratingHistoric := router.Group("/rating-historics")
 	{
 		ratingHistoric.POST("/", handler.CreateRatingHistoric)
-		ratingHistoric.GET("/:id", handler.GetRatingHistoric)
+		ratingHistoric.GET("/:stock", handler.GetRatingHistoricsByStock)
 		ratingHistoric.GET("/", handler.GetRatingHistorics)
 		ratingHistoric.PUT("/", handler.UpdateRatingHistoric)
 		ratingHistoric.DELETE("/", handler.DeleteRatingHistoric)
