@@ -26,7 +26,7 @@ func (repository ActionRepository) Find(id uuid.UUID) (*domain.Action, error) {
 
 func (repository ActionRepository) FindByName(name string) (domain.Action, error) {
 	var action domain.Action
-	err := repository.db.Where("name == ?", name).First(&action).Error
+	err := repository.db.Where("name = ?", name).First(&action).Error
 	return action, err
 }
 

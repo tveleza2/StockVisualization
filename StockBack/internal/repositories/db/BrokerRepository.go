@@ -27,7 +27,7 @@ func (repository BrokerRepository) Find(id uuid.UUID) (*domain.Broker, error) {
 
 func (repository BrokerRepository) FindByName(name string) (domain.Broker, error) {
 	var broker domain.Broker
-	err := repository.db.Where("name == ?", name).First(&broker).Error
+	err := repository.db.Where("name = ?", name).First(&broker).Error
 	return broker, err
 }
 func (repository BrokerRepository) FindByNames(names *[]string) (*[]domain.Broker, error) {

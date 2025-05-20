@@ -33,7 +33,7 @@ func (repository RatingRepository) FindByNames(names *[]string) (*[]domain.Ratin
 
 func (repository RatingRepository) FindByName(name string) (domain.Rating, error) {
 	var rating domain.Rating
-	err := repository.db.Where("name == ", name).First(&rating).Error
+	err := repository.db.Where("name = ?", name).First(&rating).Error
 	return rating, err
 }
 
