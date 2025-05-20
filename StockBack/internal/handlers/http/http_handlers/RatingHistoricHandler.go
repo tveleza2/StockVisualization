@@ -51,7 +51,8 @@ func (handler RatingHistoricHandler) GetRatingHistoric(context *gin.Context) {
 }
 
 func (handler RatingHistoricHandler) GetRatingHistorics(context *gin.Context) {
-	resp, err := handler.service.FetchRatingsFromSource()
+	// resp, err := handler.service.FetchRatingsFromSource()
+	resp, err := handler.service.GetRatingsFromDB()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

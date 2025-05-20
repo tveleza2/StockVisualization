@@ -3,6 +3,7 @@ package db
 import (
 	"stock-app/internal/core/domain"
 	"stock-app/internal/core/ports"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -22,7 +23,13 @@ func (repository RatingHistoricRepository) Create(ratingHistoric *domain.RatingH
 
 func (repository RatingHistoricRepository) Find(id uuid.UUID) (*domain.RatingHistoric, error) {
 	ratingHistoric := domain.RatingHistoric{}
-	return &ratingHistoric, repository.db.First(&ratingHistoric, id).Error
+	return &ratingHistoric, repository.db.
+		Preload("BrokerStock").
+		Preload("BrokerStock.Broker").
+		Preload("BrokerStock.Stock").
+		Preload("FromRating").
+		Preload("ToRating").
+		Preload("Action").First(&ratingHistoric, id).Error
 }
 
 func (repository RatingHistoricRepository) FindOneByBrokerStock(id uuid.UUID) (*domain.RatingHistoric, error) {
@@ -32,17 +39,39 @@ func (repository RatingHistoricRepository) FindOneByBrokerStock(id uuid.UUID) (*
 
 func (repository RatingHistoricRepository) FindAllByStock(brokerStockIds *[]uuid.UUID) ([]domain.RatingHistoric, error) {
 	ratingHistoric := []domain.RatingHistoric{}
-	return ratingHistoric, repository.db.Where("stock_id IN ?", brokerStockIds).First(&ratingHistoric).Error
+	return ratingHistoric, repository.db.
+		Preload("BrokerStock").
+		Preload("BrokerStock.Broker").
+		Preload("BrokerStock.Stock").
+		Preload("FromRating").
+		Preload("ToRating").
+		Preload("Action").Where("stock_id IN ?", brokerStockIds).First(&ratingHistoric).Error
 }
 
 func (repository RatingHistoricRepository) FindAll() ([]domain.RatingHistoric, error) {
 	var ratingHistorics []domain.RatingHistoric
-	err := repository.db.Find(&ratingHistorics).Error
+	err := repository.db.
+		Preload("BrokerStock").
+		Preload("BrokerStock.Broker").
+		Preload("BrokerStock.Stock").
+		Preload("FromRating").
+		Preload("ToRating").
+		Preload("Action").Find(&ratingHistorics).Error
 	return ratingHistorics, err
 }
 
 func (repository RatingHistoricRepository) Update(ratingHistoric *domain.RatingHistoric) error {
 	return repository.db.Save(ratingHistoric).Error
+}
+func (repository RatingHistoricRepository) FindExistence(brokerStockId uuid.UUID, time time.Time) (*domain.RatingHistoric, error) {
+	ratingHistoric := domain.RatingHistoric{}
+	return &ratingHistoric, repository.db.
+		Preload("BrokerStock").
+		Preload("BrokerStock.Broker").
+		Preload("BrokerStock.Stock").
+		Preload("FromRating").
+		Preload("ToRating").
+		Preload("Action").Where("broker_stock_id = ? AND time = ?", brokerStockId, time).First(&ratingHistoric).Error
 }
 
 func (repository RatingHistoricRepository) Delete(id uuid.UUID) error {

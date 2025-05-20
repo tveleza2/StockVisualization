@@ -11,6 +11,7 @@ import (
 	"stock-app/internal/handlers/mapper"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func validateRatingHistoricDTOForCreate(dto *dto.RatingHistoricDTO) error {
@@ -109,6 +110,7 @@ func (service RatingHistoricService) ReadRatingHistoricByStock(stock string) ([]
 }
 
 func (service RatingHistoricService) SaveResponseRatingHistoric(dto dto.FullResponseRatingHistoricDTO) error {
+
 	action, err := service.actService.FindByName(dto.ActionName)
 	if err != nil {
 		return err
@@ -125,11 +127,19 @@ func (service RatingHistoricService) SaveResponseRatingHistoric(dto dto.FullResp
 	if err != nil {
 		return err
 	}
-	ratingHistoric, err := mapper.RatingHistoricFromFullResponse(&dto, brokerStock, action, fromRating, toRating)
+	newRatingHistoric, err := mapper.RatingHistoricFromFullResponse(&dto, brokerStock, action, fromRating, toRating)
 	if err != nil {
 		return fmt.Errorf("the dto mapping failed")
 	}
-	return service.ratingHistoricRepository.Update(&ratingHistoric)
+	oldRatingHistoric, err := service.ratingHistoricRepository.FindExistence(brokerStock.ID, dto.Time)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return service.ratingHistoricRepository.Update(&newRatingHistoric)
+		}
+		return fmt.Errorf("there was an error in the connection with database")
+	}
+	newRatingHistoric.ID = oldRatingHistoric.ID
+	return service.ratingHistoricRepository.Update(&newRatingHistoric)
 }
 
 func (service RatingHistoricService) SaveMultipleResponsesRatingHistoric(dtos []dto.FullResponseRatingHistoricDTO) error {
@@ -174,33 +184,13 @@ func (service RatingHistoricService) FetchRatingsFromSource() (*[]dto.FullRespon
 	return &responseFormat.Items, nil
 }
 
-// func (service RatingHistoricService) SaveMultipleResponseRatingHistoric(dtos *[]dto.FullResponseRatingHistoricDTO) error {
-// 	numberOfNewEntries := len(*dtos)
-// 	actionNames, brokerNames, ratingNames := make([]string, numberOfNewEntries), make([]string, numberOfNewEntries), make([]string, 2*numberOfNewEntries)
-// 	var ratingHistoric domain.RatingHistoric
-
-// 	for i, dto := range *dtos {
-// 		actionNames[i] = dto.ActionName
-// 		brokerNames[i] = dto.BrokerName
-// 		ratingNames[2*i] = dto.FromRating
-// 		ratingNames[2*i+1] = dto.ToRating
-// 	}
-// 	actions, err := service.actService.FindByNames(&actionNames)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	ratings, err := service.ratService.FindByNames(&ratingNames)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	brokerStocks, err := service.bSService.FindByBrokersAndStock(brokerNames,)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	for _, dto := range *dtos {
-// 		ratingHistoric = mapper.RatingHistoricFromFullResponse(dto,brokerStocks[],actions[dto.ActionName],ratings[dto.FromRating],ratings[dto.ToRating])
-// 	}
-
-// 	return nil
-// }
+func (service RatingHistoricService) GetRatingsFromDB() (*[]dto.FullResponseRatingHistoricDTO, error) {
+	ratingHistorics, err := service.ratingHistoricRepository.FindAll()
+	if err != nil {
+		return &[]dto.FullResponseRatingHistoricDTO{}, err
+	}
+	fmt.Println("ENTITIES: ", ratingHistorics)
+	dtos := mapper.FullResponseFromRatingHistorics(ratingHistorics)
+	fmt.Println("DTOS:", dtos)
+	return &dtos, nil
+}
