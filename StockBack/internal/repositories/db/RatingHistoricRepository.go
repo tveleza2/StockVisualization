@@ -27,7 +27,7 @@ func (repository RatingHistoricRepository) Find(id uuid.UUID) (*domain.RatingHis
 
 func (repository RatingHistoricRepository) FindOneByBrokerStock(id uuid.UUID) (*domain.RatingHistoric, error) {
 	ratingHistoric := domain.RatingHistoric{}
-	return &ratingHistoric, repository.db.Where("broker_stock_id == ?", id).First(&ratingHistoric).Error
+	return &ratingHistoric, repository.db.Where("broker_stock_id = ?", id).First(&ratingHistoric).Error
 }
 
 func (repository RatingHistoricRepository) FindAllByStock(brokerStockIds *[]uuid.UUID) ([]domain.RatingHistoric, error) {

@@ -33,7 +33,7 @@ func (repository BrokerStockRepository) FindAll() ([]domain.BrokerStock, error) 
 
 func (repository BrokerStockRepository) FindByBrokerAndStock(brokerId uuid.UUID, stockId string) (domain.BrokerStock, error) {
 	var brokerStock domain.BrokerStock
-	err := repository.db.Where("broker_id == ? AND stock_id == ?", brokerId, stockId).First(&brokerStock).Error
+	err := repository.db.Where("broker_id = ? AND stock_id = ?", brokerId, stockId).First(&brokerStock).Error
 	return brokerStock, err
 }
 func (repository BrokerStockRepository) FindByBrokersAndStock(brokerIds []uuid.UUID, stockIds []string) (*[]domain.BrokerStock, error) {
@@ -44,7 +44,7 @@ func (repository BrokerStockRepository) FindByBrokersAndStock(brokerIds []uuid.U
 
 func (repository BrokerStockRepository) FindAllByStock(stockId string) ([]domain.BrokerStock, error) {
 	var brokerStocks []domain.BrokerStock
-	err := repository.db.Where("stock_id == ?", stockId).Find(&brokerStocks).Error
+	err := repository.db.Where("stock_id = ?", stockId).Find(&brokerStocks).Error
 	return brokerStocks, err
 }
 

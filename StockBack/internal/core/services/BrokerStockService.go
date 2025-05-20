@@ -32,12 +32,14 @@ func validateBrokerStockDTOForUpdateOrDelete(dto *dto.BrokerStockDTO) error {
 type BrokerStockService struct {
 	brokerStockRepository ports.BrokerStockPort
 	brokerService         BrokerService
+	stockService          StockService
 }
 
-func NewBrokerStockService(repository ports.BrokerStockPort, brokerService BrokerService) *BrokerStockService {
+func NewBrokerStockService(repository ports.BrokerStockPort, brokerService BrokerService, stockService StockService) *BrokerStockService {
 	return &BrokerStockService{
 		brokerStockRepository: repository,
 		brokerService:         brokerService,
+		stockService:          stockService,
 	}
 }
 
@@ -103,12 +105,16 @@ func (service BrokerStockService) DeleteBrokerStock(brokerStockDTO dto.BrokerSto
 	return service.brokerStockRepository.Delete(brokerStockDTO.ID)
 }
 
-func (service BrokerStockService) FindByBrokerAndStock(brokerName string, stockId string) (domain.BrokerStock, error) {
+func (service BrokerStockService) FindByBrokerAndStock(brokerName string, stockId string, stockName string) (domain.BrokerStock, error) {
 	broker, err := service.brokerService.FindByName(brokerName)
 	if err != nil {
 		return domain.BrokerStock{}, err
 	}
-	brokerStock, err := service.brokerStockRepository.FindByBrokerAndStock(broker.ID, stockId)
+	stock, err := service.stockService.FindById(stockId, stockName)
+	if err != nil {
+		return domain.BrokerStock{}, err
+	}
+	brokerStock, err := service.brokerStockRepository.FindByBrokerAndStock(broker.ID, stock.ID)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			brokerStockDTO, err := service.CreateBrokerStock(dto.BrokerStockDTO{BrokerID: broker.ID, StockID: stockId})

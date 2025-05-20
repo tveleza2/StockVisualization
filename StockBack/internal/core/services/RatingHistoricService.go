@@ -113,7 +113,7 @@ func (service RatingHistoricService) SaveResponseRatingHistoric(dto dto.FullResp
 	if err != nil {
 		return err
 	}
-	brokerStock, err := service.bSService.FindByBrokerAndStock(dto.BrokerName, dto.StockID)
+	brokerStock, err := service.bSService.FindByBrokerAndStock(dto.BrokerName, dto.StockID, dto.StockName)
 	if err != nil {
 		return err
 	}
