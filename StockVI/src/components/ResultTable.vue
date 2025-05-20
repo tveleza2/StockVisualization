@@ -37,6 +37,7 @@
 
     const props = defineProps<{
         selectedStock: RatingsHistoric;
+        ratingsData: RatingsHistoric[];
     }>();
 
     const ratings = ref<RatingsHistoric[]>([])
