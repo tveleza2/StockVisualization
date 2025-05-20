@@ -98,6 +98,7 @@ func (service RatingHistoricService) DeleteRatingHistoric(ratingHistoricDTO dto.
 }
 
 func (service RatingHistoricService) ReadRatingHistoricByStock(stock string) ([]dto.FullResponseRatingHistoricDTO, error) {
+	fmt.Println(stock)
 	brokerStockIds, err := service.bSService.IdsByStock(stock)
 	if err != nil {
 		return []dto.FullResponseRatingHistoricDTO{}, err

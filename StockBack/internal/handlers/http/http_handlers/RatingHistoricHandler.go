@@ -59,6 +59,15 @@ func (handler RatingHistoricHandler) GetRatingHistorics(context *gin.Context) {
 	}
 	context.JSON(http.StatusOK, resp)
 }
+func (handler RatingHistoricHandler) GetRatingHistoricsByStock(context *gin.Context) {
+	stock := context.Param("stock")
+	resp, err := handler.service.ReadRatingHistoricByStock(stock)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	context.JSON(http.StatusOK, resp)
+}
 
 func (handler RatingHistoricHandler) UpdateRatingHistoric(context *gin.Context) {
 	var req dto.RatingHistoricDTO
