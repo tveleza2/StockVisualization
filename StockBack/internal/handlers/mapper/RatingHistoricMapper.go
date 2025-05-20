@@ -46,7 +46,7 @@ func FromRatingHistorics(ratingHistorics []domain.RatingHistoric) []dto.RatingHi
 
 func FullResponseFromRatingHistoric(ratingHistoric *domain.RatingHistoric) dto.FullResponseRatingHistoricDTO {
 	fromTarget := strconv.FormatFloat(ratingHistoric.FromTarget, 'f', -1, 64)
-	toTarget := strconv.FormatFloat(ratingHistoric.FromTarget, 'f', -1, 64)
+	toTarget := strconv.FormatFloat(ratingHistoric.ToTarget, 'f', -1, 64)
 	return dto.FullResponseRatingHistoricDTO{
 		ID:         ratingHistoric.ID,
 		BrokerName: ratingHistoric.BrokerStock.Broker.Name,
