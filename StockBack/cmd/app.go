@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"stock-app/internal/core/services"
 	web "stock-app/internal/handlers/http"
+	"stock-app/internal/infrastructure"
 	"stock-app/internal/repositories/db"
 
 	"github.com/gin-gonic/gin"
@@ -29,15 +31,15 @@ func main() {
 	ratHisRepo := db.NewRatingHistoricRepository(database)
 	ratHisService := services.NewRatingHistoricService(ratHisRepo, *brokerStockService, *actionService, *ratingService)
 
-	// importRepository := infrastructure.NewImportRepository()
-	// importService := services.NewExternalResourcesService(importRepository, *ratHisService)
+	importRepository := infrastructure.NewImportRepository()
+	importService := services.NewExternalResourcesService(importRepository, *ratHisService)
 	router := web.NewRouter(*actionService, *ratHisService)
 
-	// err := importService.SaveIncomingRatings()
+	err := importService.SaveIncomingRatings()
 
-	// if err != nil {
-	// 	fmt.Println("Error persisting the incoming data: %w", err)
-	// }
+	if err != nil {
+		fmt.Println("Error persisting the incoming data: %w", err)
+	}
 
 	router.Run(":8080")
 

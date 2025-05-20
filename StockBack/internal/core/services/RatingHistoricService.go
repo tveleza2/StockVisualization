@@ -189,8 +189,6 @@ func (service RatingHistoricService) GetRatingsFromDB() (*[]dto.FullResponseRati
 	if err != nil {
 		return &[]dto.FullResponseRatingHistoricDTO{}, err
 	}
-	fmt.Println("ENTITIES: ", ratingHistorics)
 	dtos := mapper.FullResponseFromRatingHistorics(ratingHistorics)
-	fmt.Println("DTOS:", dtos)
 	return &dtos, nil
 }
