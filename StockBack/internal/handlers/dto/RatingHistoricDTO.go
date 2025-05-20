@@ -34,6 +34,7 @@ type RequestRatingHistoricDTO struct {
 type FullResponseRatingHistoricDTO struct {
 	ID         uuid.UUID `json:"id,omitempty"`
 	StockID    string    `json:"ticker"`
+	StockName  string    `json:"company"`
 	BrokerName string    `json:"brokerage"`
 	ActionName string    `json:"action"` // Optional for additional context
 	FromTarget string    `json:"target_from"`

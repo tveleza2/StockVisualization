@@ -51,6 +51,7 @@ func FullResponseFromRatingHistoric(ratingHistoric *domain.RatingHistoric) dto.F
 		ID:         ratingHistoric.ID,
 		BrokerName: ratingHistoric.BrokerStock.Broker.Name,
 		StockID:    ratingHistoric.BrokerStock.Stock.ID,
+		StockName:  ratingHistoric.BrokerStock.Stock.Name,
 		FromTarget: fromTarget,
 		ToTarget:   toTarget,
 		Time:       ratingHistoric.Time,
