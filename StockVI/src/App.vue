@@ -2,7 +2,7 @@
 
 
   <div class="flex flex-col h-screen">
-    <NavBar/>
+    <NavBar @search-results="handleSearchResults" />
     <div class="flex flex-1">
       <div :class="selectedStock ? 'w-3/4' : 'w-full'">
         <StockTable :ratingsData="ratingsData" @stock-selected="stock => selectedStock = stock"></StockTable>
@@ -29,7 +29,12 @@
   const filteredRatingsData = computed(() => {
     if (!selectedStock.value) return []
     return ratingsData.value.filter(r => r.stock === selectedStock.value?.stock)
-})
+  })
+
+
+  function handleSearchResults(results: RatingsHistoric[]) {
+    ratingsData.value = results
+  }
 
   onMounted(async () => {
     ratingsData.value = await GetRatingsHistoric();
