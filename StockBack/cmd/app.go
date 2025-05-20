@@ -23,6 +23,8 @@ func main() {
 	brokerStockService := services.NewBrokerStockService(brokerStockRepo, *brokerService)
 	ratHisService := services.NewRatingHistoricService(ratHisRepo, *brokerStockService, *actionService, *ratingService)
 
+	router := web.NewRouter(*actionService, *ratHisService)
+
 	fetchedData, err := ratHisService.FetchRatingsFromSource()
 
 	if err != nil {
@@ -36,7 +38,6 @@ func main() {
 	for _, dto := range *fetchedData {
 		fmt.Println(dto)
 	}
-	router := web.NewRouter(*actionService, *ratHisService)
 
 	router.Run(":8080")
 
