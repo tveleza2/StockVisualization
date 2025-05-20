@@ -1,41 +1,37 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-  <header>
-  </header>
 
-  <main>
-    
-  </main>
+
+  <div class="flex flex-col h-screen">
+    <NavBar/>
+    <div class="flex flex-1">
+      <div :class="selectedStock ? 'w-3/4' : 'w-full'">
+        <StockTable :ratingsData="ratingsData" @stock-selected="stock => selectedStock = stock"></StockTable>
+      </div>
+      <div v-if="selectedStock" class="w-1/4 p-4 space-y-4">
+        <StockChart v-if="selectedStock" :selectedStock="selectedStock"></StockChart>
+        <BrokerRating v-if="selectedStock" :ratingsData="filteredRatingsData" :selectedStock="selectedStock"></BrokerRating>
+      </div>
+    </div>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
+<script setup lang="ts">
+  import { computed, onMounted, ref } from 'vue'
+  import NavBar from '@/components/NavBar.vue'
+  import StockTable from '@/components/StockTable.vue'
+  import StockChart from '@/components/StockChart.vue'
+  import BrokerRating from '@/components/BrokerRating.vue'
+  import type { RatingsHistoric } from './ports/RatingHistoric'
+  import { GetRatingsHistoric } from './services/RatingsHistoric'
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+  const selectedStock = ref<RatingsHistoric | null>(null);
+  const ratingsData = ref<RatingsHistoric[]>([])
+  const filteredRatingsData = computed(() => {
+    if (!selectedStock.value) return []
+    return ratingsData.value.filter(r => r.stock === selectedStock.value?.stock)
+})
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+  onMounted(async () => {
+    ratingsData.value = await GetRatingsHistoric();
+  });
+</script>
