@@ -21,7 +21,7 @@ func (repository StockRepository) Create(stock *domain.Stock) error {
 
 func (repository StockRepository) Find(id string) (*domain.Stock, error) {
 	stock := domain.Stock{}
-	return &stock, repository.db.First(&stock, id).Error
+	return &stock, repository.db.Where("id = ?", id).First(&stock).Error
 }
 
 func (repository StockRepository) FindAll() ([]domain.Stock, error) {

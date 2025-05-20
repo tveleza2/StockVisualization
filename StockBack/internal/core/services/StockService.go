@@ -3,9 +3,12 @@ package services
 import (
 	"errors"
 	"fmt"
+	"stock-app/internal/core/domain"
 	"stock-app/internal/core/ports"
 	"stock-app/internal/handlers/dto"
 	"stock-app/internal/handlers/mapper"
+
+	"gorm.io/gorm"
 )
 
 func validateStockDTOForCreate(dto *dto.StockDTO) error {
@@ -55,6 +58,19 @@ func (service StockService) ReadStock(id string) (dto.StockDTO, error) {
 		return dto.StockDTO{}, err
 	}
 	return mapper.FromStock(stock), nil
+}
+
+func (service StockService) FindById(id string, name string) (domain.Stock, error) {
+	// Softer version of ReadStock, if no value encountered, it creates a new one in the DB
+	stock, err := service.stockRepository.Find(id)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			stockDTO, err := service.CreateStock(dto.StockDTO{ID: id, Name: name})
+			return mapper.ToStock(&stockDTO), err
+		}
+		return domain.Stock{}, err
+	}
+	return *stock, nil
 }
 
 func (service StockService) ReadStocks() ([]dto.StockDTO, error) {
