@@ -101,3 +101,50 @@ func (service StockService) DeleteStock(stockDTO dto.StockDTO) error {
 	}
 	return service.stockRepository.Delete(stockDTO.ID)
 }
+
+func (service StockService) CalculateStockScores(recentRatings []domain.RatingHistoric) (map[string]dto.StockDTO, error) {
+	stockDtos, err := service.ReadStocks()
+	for i, stock := range stockDtos {
+		stock.Score = 0
+		stockDtos[i] = stock
+	}
+	stockMap := make(map[string]dto.StockDTO)
+	for _, dto := range stockDtos {
+		stockMap[dto.ID] = dto
+	}
+	if err != nil {
+		return make(map[string]dto.StockDTO), err
+	}
+
+	for _, rating := range recentRatings {
+		stockID := rating.BrokerStock.StockID
+		stock := stockMap[stockID]
+		stock.Score = service.CalculateIndividualScore(stock.Score, &rating)
+		stockMap[stockID] = stock
+	}
+
+	for _, updatedStock := range stockMap {
+		err = service.UpdateStock(updatedStock)
+		if err != nil {
+			return make(map[string]dto.StockDTO), err
+		}
+	}
+	return stockMap, nil
+}
+
+func (service StockService) CalculateIndividualScore(score int, rating *domain.RatingHistoric) int {
+	if rating.ToRating.Name == "Buy" {
+		if rating.FromRating.Name == "Buy" {
+			score++
+		} else {
+			score += 3
+		}
+	}
+	if rating.FromRating.Name == "Buy" && rating.ToRating.Name != "Buy" {
+		score -= 2
+	}
+	if rating.FromTarget < rating.ToTarget {
+		score += 2
+	}
+	return score
+}

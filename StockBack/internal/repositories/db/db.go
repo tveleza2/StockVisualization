@@ -42,11 +42,12 @@ func NewSchema(migrateSchema bool, importData bool) (Schema, error) {
 
 	ratHisRepo := NewRatingHistoricRepository(DB)
 	ratHisService := services.NewRatingHistoricService(ratHisRepo, *brokerStockService, *actionService, *ratingService)
+
 	if importData {
 		importRepository := infrastructure.NewImportRepository()
 		importService := services.NewExternalResourcesService(importRepository, *ratHisService)
-
 		err = importService.SaveIncomingRatings()
+		ratHisService.UpdateStockScores()
 	} else {
 		err = nil
 	}

@@ -13,7 +13,9 @@ type RatingHistoricPort interface {
 	FindOneByBrokerStock(id uuid.UUID) (*domain.RatingHistoric, error)
 	FindExistence(brokerStockId uuid.UUID, time time.Time) (*domain.RatingHistoric, error)
 	FindAllByStock(brokerStockIds []uuid.UUID) ([]domain.RatingHistoric, error)
+	FindRecent(date time.Time) ([]domain.RatingHistoric, error)
 	FindAll() ([]domain.RatingHistoric, error)
+
 	Update(rating *domain.RatingHistoric) error
 	Delete(id uuid.UUID) error
 }

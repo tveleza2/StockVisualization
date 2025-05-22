@@ -22,5 +22,6 @@ func NewRouter(schema *db.Schema) *gin.Engine {
 	router.Use(handlers.CORSMiddleware())
 	routes.RegisterActionRoutes(router, schema.ActionService)
 	routes.RegisterRatingHistoricRoutes(router, schema.RHService)
+	routes.RegisterStockRoutes(router, schema.StockService)
 	return router
 }
