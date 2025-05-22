@@ -7,15 +7,17 @@ import (
 
 func ToStock(stockDTO *dto.StockDTO) domain.Stock {
 	return domain.Stock{
-		ID:   stockDTO.ID,
-		Name: stockDTO.Name,
+		ID:    stockDTO.ID,
+		Name:  stockDTO.Name,
+		Score: stockDTO.Score,
 	}
 }
 
 func FromStock(stock *domain.Stock) dto.StockDTO {
 	return dto.StockDTO{
-		ID:   stock.ID,
-		Name: stock.Name,
+		ID:    stock.ID,
+		Name:  stock.Name,
+		Score: stock.Score,
 	}
 }
 

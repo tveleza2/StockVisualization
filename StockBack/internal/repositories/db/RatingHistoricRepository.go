@@ -48,6 +48,18 @@ func (repository RatingHistoricRepository) FindAllByStock(brokerStockIds []uuid.
 		Preload("Action").Where("broker_stock_id IN ?", brokerStockIds).Find(&ratingHistoric).Error
 }
 
+func (repository RatingHistoricRepository) FindRecent(date time.Time) ([]domain.RatingHistoric, error) {
+	ratingHistoric := []domain.RatingHistoric{}
+
+	return ratingHistoric, repository.db.
+		Preload("BrokerStock").
+		Preload("BrokerStock.Broker").
+		Preload("BrokerStock.Stock").
+		Preload("FromRating").
+		Preload("ToRating").
+		Preload("Action").Where(`"time" > ?`, date).Find(&ratingHistoric).Error
+}
+
 func (repository RatingHistoricRepository) FindAll() ([]domain.RatingHistoric, error) {
 	var ratingHistorics []domain.RatingHistoric
 	err := repository.db.

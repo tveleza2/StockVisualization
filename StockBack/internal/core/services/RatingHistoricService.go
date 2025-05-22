@@ -9,6 +9,7 @@ import (
 	"stock-app/internal/core/ports"
 	"stock-app/internal/handlers/dto"
 	"stock-app/internal/handlers/mapper"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -192,4 +193,19 @@ func (service RatingHistoricService) GetRatingsFromDB() (*[]dto.FullResponseRati
 	}
 	dtos := mapper.FullResponseFromRatingHistorics(ratingHistorics)
 	return &dtos, nil
+}
+
+func (service RatingHistoricService) UpdateStockScores() error {
+	// currentDate := time.Now()
+	// recentRatings, err := service.ratingHistoricRepository.FindRecent(currentDate.AddDate(0, 0, -7))
+	currentDate := time.Date(2025, 5, 13, 0, 30, 5, 974, time.UTC)
+	recentRatings, err := service.ratingHistoricRepository.FindRecent(currentDate.AddDate(0, -2, 0))
+	if err != nil {
+		return err
+	}
+	_, err = service.bSService.stockService.CalculateStockScores(recentRatings)
+	if err != nil {
+		return err
+	}
+	return nil
 }
