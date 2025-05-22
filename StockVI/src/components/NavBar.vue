@@ -1,12 +1,11 @@
 <template>
   <div class="flex justify-between items-center p-4 bg-[#C4E7D4]">
     <img src="@/assets/logo.png" class="w-1/30" />
-    // ...existing code...
-  <input
-  v-model="search"
-  placeholder="🔍 Search a Stock"
-  class="border rounded px-2 py-1 w-1/3 text-center"
-  @keyup.enter="handleSearch"><input>
+    <input
+    v-model="search"
+    placeholder="🔍 Search a Stock"
+    class="border rounded px-2 py-1 w-1/3 text-center"
+    @keyup.enter="handleSearch"/>
     <div class="text-sm text-gray-600">{{ currentTime }} ({{ timeZoneName }})</div>
   </div>
 </template>

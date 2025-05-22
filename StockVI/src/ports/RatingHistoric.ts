@@ -4,6 +4,7 @@ export interface RatingsHistoric{
     broker: string, 
     action: string, 
     rating: string,
-    target?: number
+    target?: number,
+    recommended?: boolean
 }
 

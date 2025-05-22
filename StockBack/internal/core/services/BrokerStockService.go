@@ -72,7 +72,7 @@ func (service BrokerStockService) ReadBrokerStocks() ([]dto.BrokerStockDTO, erro
 	return mapper.FromBrokerStocks(brokerStocks), nil
 }
 
-func (service BrokerStockService) IdsByStock(stockId string) (*[]uuid.UUID, error) {
+func (service BrokerStockService) IdsByStock(stockId string) ([]uuid.UUID, error) {
 	brokerStockIds := []uuid.UUID{}
 	brokerStocks, err := service.brokerStockRepository.FindAllByStock(stockId)
 	if err != nil {
@@ -81,7 +81,7 @@ func (service BrokerStockService) IdsByStock(stockId string) (*[]uuid.UUID, erro
 	for _, brokerStock := range brokerStocks {
 		brokerStockIds = append(brokerStockIds, brokerStock.ID)
 	}
-	return &brokerStockIds, nil
+	return brokerStockIds, nil
 }
 
 func (service BrokerStockService) UpdateBrokerStock(brokerStockDTO dto.BrokerStockDTO) error {
