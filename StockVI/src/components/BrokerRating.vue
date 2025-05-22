@@ -1,7 +1,7 @@
 <template>
     <div class="border p-4">
         <DataTable :value="props.ratingsData">
-            <Column :headerStyle="{ fontWeight: 'bold', fontSize: '1.125rem' }" v-for="col of columns" :key="col.field" :field="col.field" :header="col.header " ></Column>
+            <Column sortable :headerStyle="{ fontWeight: 'bold', fontSize: '1.125rem' }" v-for="col of columns" :key="col.field" :field="col.field" :header="col.header " ></Column>
         </DataTable>
 
     </div>
