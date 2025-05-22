@@ -1,7 +1,7 @@
 <template>
     <div class="overflow-x-auto p-4">
         <DataTable :value="ratingsData" tableStyle="min-width: 50rem" @row-click="onRowClick">
-            <Column :headerStyle="{ fontWeight: 'bold', fontSize: '1.125rem' }" v-for="col of columns" :key="col.field" :field="col.field" :header="col.header " ></Column>
+            <Column sortable :headerStyle="{ fontWeight: 'bold', fontSize: '1.125rem' }" v-for="col of columns" :key="col.field" :field="col.field" :header="col.header " ></Column>
         </DataTable>
     </div>
   </template>
