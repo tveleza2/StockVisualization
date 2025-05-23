@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	schema, err := db.NewSchema(false, true)
+	schema, err := db.NewSchema(false, false)
 	if err != nil {
 		fmt.Println(fmt.Errorf("error with database connection: %w", err))
 	}

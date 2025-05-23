@@ -17,7 +17,7 @@
         >
           &times;
         </button>
-        <StockChart :selectedStock="selectedStock"></StockChart>
+        <!-- <StockChart :selectedStock="selectedStock"></StockChart> -->
         <BrokerRating :ratingsData="filteredRatingsData" :selectedStock="selectedStock"></BrokerRating>
       </div>
     </div>
