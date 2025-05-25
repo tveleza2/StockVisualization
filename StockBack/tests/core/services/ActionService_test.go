@@ -180,9 +180,8 @@ func TestActionService_FindByName_Existing(t *testing.T) {
 func TestActionService_FindByName_NotExisting(t *testing.T) {
 	repo := &mockActionRepo{}
 	service := services.NewActionService(repo)
-	action, err := service.FindByName("CreateMe")
-	assert.NoError(t, err)
-	assert.Equal(t, "CreateMe", action.Name)
+	_, err := service.FindByName("CreateMe")
+	assert.Error(t, err)
 }
 
 func TestActionService_FindByNames(t *testing.T) {
