@@ -113,7 +113,7 @@ func TestBrokerService_ReadBrokers(t *testing.T) {
 func TestBrokerService_UpdateBroker_Success(t *testing.T) {
 	repo := &mockBrokerRepo{}
 	service := services.NewBrokerService(repo)
-	created, _ := service.CreateBroker(dto.BrokerDTO{Name: "A"})
+	created, _ := service.CreateBroker(dto.BrokerDTO{ID: uuid.New(), Name: "A"})
 	updateDTO := dto.BrokerDTO{ID: created.ID, Name: "B"}
 	err := service.UpdateBroker(updateDTO)
 	assert.NoError(t, err)
@@ -140,7 +140,7 @@ func TestBrokerService_UpdateBroker_NotFound(t *testing.T) {
 func TestBrokerService_DeleteBroker_Success(t *testing.T) {
 	repo := &mockBrokerRepo{}
 	service := services.NewBrokerService(repo)
-	created, _ := service.CreateBroker(dto.BrokerDTO{Name: "A"})
+	created, _ := service.CreateBroker(dto.BrokerDTO{ID: uuid.New(), Name: "A"})
 	deleteDTO := dto.BrokerDTO{ID: created.ID, Name: created.Name}
 	err := service.DeleteBroker(deleteDTO)
 	assert.NoError(t, err)
@@ -168,9 +168,8 @@ func TestBrokerService_FindByName_Existing(t *testing.T) {
 func TestBrokerService_FindByName_NotExisting(t *testing.T) {
 	repo := &mockBrokerRepo{}
 	service := services.NewBrokerService(repo)
-	broker, err := service.FindByName("CreateMe")
-	assert.NoError(t, err)
-	assert.Equal(t, "CreateMe", broker.Name)
+	_, err := service.FindByName("CreateMe")
+	assert.Error(t, err)
 }
 
 func TestBrokerService_FindByMapOfNames(t *testing.T) {

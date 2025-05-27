@@ -101,7 +101,7 @@ func (service RatingService) FindByName(name string) (domain.Rating, error) {
 			ratingDTO, err := service.CreateRating(dto.RatingDTO{Name: name})
 			return mapper.ToRating(&ratingDTO), err
 		}
-		return rating, nil
+		return rating, err
 	}
-	return rating, err
+	return rating, nil
 }
