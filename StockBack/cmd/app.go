@@ -14,6 +14,7 @@ func main() {
 	if err != nil {
 		fmt.Println(fmt.Errorf("error with database connection: %w", err))
 	}
+	fmt.Println("Succesful DB connection")
 	router := web.NewRouter(&schema)
 	router.Run(":8080")
 
